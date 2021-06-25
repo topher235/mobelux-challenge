@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    volumes:
+      - ../data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=flickr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pgpass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -t 5 -U postgres"]
+      interval: 5s
+      timeout: 6s
+      retries: 3
+    ports:
+      - "5432:5432"
+    networks:
+      - app_net
+
+  flickr_clone:
+    container_name: flickr_clone
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.webapp
+    environment:
+      DJANGO_USER: admin
+      DJANGO_PASS: pass
+    command: >
+      sh -c "pipenv run python manage.py migrate &&
+             pipenv run python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ../flickr_clone:/app
+    networks:
+      - app_net
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  app_net:
+    driver: bridge

@@ -1,0 +1,6 @@
+FROM python:3.9
+ENV PYTHONPATH=/app/
+WORKDIR /app
+COPY Pipfile /app
+COPY Pipfile.lock /app
+RUN pip install pipenv && pipenv install
