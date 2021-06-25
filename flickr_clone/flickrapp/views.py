@@ -1,6 +1,9 @@
 from datetime import date
 
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
 
 from .forms import CreateAlbumForm
@@ -19,3 +22,24 @@ class CreateAlbumView(LoginRequiredMixin, FormView):
                       date_created=date.today())
         album.save()
         return super().form_valid(form)
+
+
+class AlbumListForUserView(ListView):
+    template_name = 'albums/list-albums.html'
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs['username'])
+        if user == self.request.user:
+            # The requested albums belong to the logged in user
+            # A user is allowed to see their own private albums
+            album_list = Album.objects.filter(owner=user)
+        else:
+            # The requested albums do not belong to the active user
+            # A user is not allowed to see others' private albums
+            album_list = Album.objects.filter(owner=user).filter(is_public=True)
+        return album_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['username'] = self.kwargs.get('username')
+        return context

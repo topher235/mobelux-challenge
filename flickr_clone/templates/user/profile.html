@@ -2,6 +2,10 @@
 
 {% block content %}
 
-<p>Hello, {{ user.username }}. Thanks for logging in.</p>
+<h2>Hello, {{ user.username }}</h2>
+
+<a href="{% url 'user_albums' username=user.username %}">View your albums</a>
+
+<a href="{% url 'create_album' %}">Create a new album</a>
 
 {% endblock %}
