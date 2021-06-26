@@ -85,7 +85,7 @@ class UploadImageView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         # Upload file
-        upload_location = form.upload_image(self.request.FILES['file'])
+        upload_location = form.upload_image(self.request.FILES['file'], form.cleaned_data['title'])
         # Save image data to database
         image = Image(album=form.cleaned_data['album'],
                       title=form.cleaned_data['title'],
