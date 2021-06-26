@@ -5,7 +5,12 @@
     </head>
 
     <body>
-        <h1><a href="{% url 'profile' %}">Profile</a></h1>
+        {% if user.is_authenticated %}
+            <h1><a href="{% url 'profile' %}">Profile</a></h1>
+        {% else %}
+            <h1><a href="{% url 'login' %}">Login</a></h1>
+        {% endif %}
+        <h1><a href="{% url 'album_list' %}">View all public albums</a></h1>
         <hr>
         {% block content %}
         {% endblock content %}
