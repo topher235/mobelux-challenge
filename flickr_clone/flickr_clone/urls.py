@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('auth.urls')),
     path('flickr/', include('flickrapp.urls')),
+    path('api/v1/', include('api.urls')),
 ]
