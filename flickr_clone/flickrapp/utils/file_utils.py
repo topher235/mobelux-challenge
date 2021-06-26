@@ -51,7 +51,7 @@ class MinioUploader(FileUploader):
 
         # Upload the file to the bucket
         self.client.fput_object(bucket_name=self.bucket_name,
-                                object_name=f'{object_name}.{source.name.split(".")[-1]}',
+                                object_name=object_name,
                                 file_path=path,
                                 content_type=source.content_type)
 
@@ -64,7 +64,7 @@ def upload_file(file: Union[InMemoryUploadedFile, TemporaryUploadedFile], title:
     :param title: String title of the file
     :return: String final location of the file
     """
-    upload_location = f'{title}-{datetime.now().timestamp()}'
+    upload_location = f'{title}-{datetime.now().timestamp()}.{file.name.split(".")[-1]}'
     uploader = MinioUploader()
     uploader.upload(source=file, object_name=upload_location)
     return upload_location

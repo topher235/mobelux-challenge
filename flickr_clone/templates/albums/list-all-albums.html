@@ -12,23 +12,19 @@ tr:nth-child(even) {
 }
 </style>
 
-<h2>Albums owned by {{ username }}</h2>
+<h2>All albums</h2>
 
 <table>
     <thead>
         <th>Album name</th>
-        <th>Public/private</th>
+        <th>Owner</th>
         <th>Date created</th>
     </thead>
     <tbody>
         {% for album in album_list %}
             <tr>
                 <td><a href="{% url 'image_list' pk=album.id %}">{{ album.name }}</a></td>
-                {% if album.is_public %}
-                <td>public</td>
-                {% else %}
-                <td>private</td>
-                {% endif %}
+                <td>{{ album.owner.username }}</td>
                 <td>{{ album.date_created }}</td>
             </tr>
         {% endfor %}

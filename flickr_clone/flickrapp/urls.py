@@ -1,10 +1,12 @@
 from django.urls import path
 
-from .views import CreateAlbumView, AlbumListForUserView, UploadImageView
+from .views import CreateAlbumView, AlbumListView, AlbumListForUserView, ImageListForAlbumView, UploadImageView
 
 
 urlpatterns = [
     path('create-album/', CreateAlbumView.as_view(), name='create_album'),
-    path('albums/<username>', AlbumListForUserView.as_view(), name='user_albums'),
-    path('upload-image', UploadImageView.as_view(), name='upload_image'),
+    path('upload-image/', UploadImageView.as_view(), name='upload_image'),
+    path('albums/', AlbumListView.as_view(), name='album_list'),
+    path('albums/<pk>/images', ImageListForAlbumView.as_view(), name='image_list'),
+    path('<username>/albums', AlbumListForUserView.as_view(), name='user_albums'),
 ]

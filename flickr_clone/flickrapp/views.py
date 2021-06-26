@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
 
+from flickr_clone import settings
 from .forms import CreateAlbumForm, UploadImageForm
 from .models import Album, Image
 
@@ -22,6 +23,17 @@ class CreateAlbumView(LoginRequiredMixin, FormView):
                       date_created=date.today())
         album.save()
         return super().form_valid(form)
+
+
+class AlbumListView(ListView):
+    template_name = "albums/list-all-albums.html"
+
+    def get_queryset(self):
+        # Only retrieve public albums
+        # Not including the possible authenticated user's private albums b/c
+        # they can go to their own profile to see those
+        album_list = Album.objects.filter(is_public=True)
+        return album_list
 
 
 class AlbumListForUserView(ListView):
@@ -42,6 +54,21 @@ class AlbumListForUserView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['username'] = self.kwargs.get('username')
+        return context
+
+
+class ImageListForAlbumView(ListView):
+    template_name = 'albums/list-images.html'
+
+    def get_queryset(self):
+        album = get_object_or_404(Album, id=self.kwargs.get('pk'))
+        image_list = Image.objects.filter(album=album)
+        return image_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['album'] = Album.objects.get(id=self.kwargs.get('pk'))
+        context['image_server_url'] = f'http://localhost:{settings.MINIO_PORT}/uploads/'
         return context
 
 
