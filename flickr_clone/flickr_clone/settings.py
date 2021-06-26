@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'flickrapp',
+    'api',
+    'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +140,8 @@ MINIO_PORT = os.getenv('MINIO_PORT', 9000)
 MINIO_SSL = os.getenv('MINIO_SSL', False)
 MINIO_USERNAME = os.getenv('MINIO_USERNAME', 'minio')
 MINIO_PASSWORD = os.getenv('MINIO_PASSWORD', 'minio123')
+
+# Django Rest Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
