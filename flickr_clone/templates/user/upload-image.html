@@ -7,6 +7,8 @@
 {{ form.non_field_errors }}
 {% endif %}
 
+<h2>Upload an image to an album</h2>
+
 <form enctype="multipart/form-data" method="post" action="{% url 'upload_image' %}">
 {% csrf_token %}
     <table>
