@@ -103,3 +103,29 @@ class UploadImageFormTest(TestCase):
         with patch('flickrapp.forms.file_utils.upload_file', return_value=expected_location):
             actual_location = form.upload_image(None, 'Beach House (front)')
         self.assertEqual(actual_location, expected_location)
+
+
+class AlbumListViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_user(username='testUser123')
+        test_user = User.objects.get(id=1)
+        for i in range(1, 10):
+            is_public = i % 2 == 0
+            Album.objects.create(owner=test_user, name=f'Album {i}', is_public=is_public,
+                                 date_created=f'2021-01-{str(i).zfill(2)}')
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/flickr/albums/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('album_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'albums/list-all-albums.html')
+
+    def test_lists_only_public_albums(self):
+        public_albums = Album.objects.filter(is_public=True)
+        response = self.client.get(reverse('album_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['album_list']), len(public_albums))
