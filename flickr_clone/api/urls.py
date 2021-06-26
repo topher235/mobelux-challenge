@@ -1,11 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from .views import AlbumViewSet
+from .views import AlbumViewSet, ImageViewSet
 
 
 router = routers.DefaultRouter()
 router.register(r'albums', AlbumViewSet, basename='Album')
+router.register(r'images', ImageViewSet, basename='Image')
 
 
 urlpatterns = [
