@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+td, th {
+  border: 1px solid #dddddd;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+
+<h2>All images belonging to album: {{ album.name }}</h2>
+
+<table>
+    <thead>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Date uploaded</th>
+        <th>Owner</th>
+    </thead>
+    <tbody>
+        {% for image in image_list %}
+            <tr>
+                <td><img src="{{ image_server_url }}/{{ image.location }}" height="200" width="300"/></td>
+                <td>{{ image.title }}</td>
+                <td>{{ image.date_uploaded }}</td>
+                <td>{{ image.album.owner.username }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}

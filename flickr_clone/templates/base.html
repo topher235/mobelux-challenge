@@ -5,7 +5,9 @@
     </head>
 
     <body>
-    {% block content %}
-    {% endblock content %}
+        <h1><a href="{% url 'profile' %}">Profile</a></h1>
+        <hr>
+        {% block content %}
+        {% endblock content %}
     </body>
 </html>

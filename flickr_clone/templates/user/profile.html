@@ -4,8 +4,13 @@
 
 <h2>Hello, {{ user.username }}</h2>
 
-<a href="{% url 'user_albums' username=user.username %}">View your albums</a>
+<h3>Actions</h3>
 
-<a href="{% url 'create_album' %}">Create a new album</a>
+<ul>
+    <li><a href="{% url 'user_albums' username=user.username %}">View your albums</a></li>
+    <li><a href="{% url 'create_album' %}">Create a new album</a></li>
+    <li><a href="{% url 'upload_image' %}">Upload an image to an album</a></li>
+    <li><a href="{% url 'album_list' %}">View all albums</a></li>
+</ul>
 
 {% endblock %}
