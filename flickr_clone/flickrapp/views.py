@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
 
-from .forms import CreateAlbumForm
-from .models import Album
+from .forms import CreateAlbumForm, UploadImageForm
+from .models import Album, Image
 
 
 class CreateAlbumView(LoginRequiredMixin, FormView):
@@ -43,3 +43,26 @@ class AlbumListForUserView(ListView):
         context = super().get_context_data(**kwargs)
         context['username'] = self.kwargs.get('username')
         return context
+
+
+class UploadImageView(LoginRequiredMixin, FormView):
+    template_name = "user/upload-image.html"
+    form_class = UploadImageForm
+    success_url = '/accounts/profile'
+
+    def get_form_kwargs(self):
+        # We need the authenticated user to get the list of albums owned by the user
+        kwargs = super(UploadImageView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        # Upload file
+        upload_location = form.upload_image(self.request.FILES['file'])
+        # Save image data to database
+        image = Image(album=form.cleaned_data['album'],
+                      title=form.cleaned_data['title'],
+                      location=upload_location,
+                      date_uploaded=date.today())
+        image.save()
+        return super().form_valid(form)

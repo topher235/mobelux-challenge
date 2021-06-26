@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+{{ form.errors }}
+{{ form.non_field_errors }}
+{% endif %}
+
+<form enctype="multipart/form-data" method="post" action="{% url 'upload_image' %}">
+{% csrf_token %}
+    <table>
+        <tr>
+            <td>{{ form.album.label_tag }}</td>
+            <td>{{ form.album }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.title.label_tag }}</td>
+            <td>{{ form.title }}</td>
+        </tr>
+        <tr>
+            <td>Select a file:</td>
+            <td>{{ form.file }}</td>
+        </tr>
+    </table>
+    <input type="submit" value="Upload">
+</form>
+
+{% endblock %}

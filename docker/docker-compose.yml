@@ -30,7 +30,7 @@ services:
       DJANGO_PASS: pass
       MINIO_ENDPOINT: minio1
       MINIO_PORT: 9000
-      MINIO_SSL: 'false'
+      MINIO_SSL: 'False'
       MINIO_USERNAME: minio
       MINIO_PASSWORD: minio123
     command: >
