@@ -2,6 +2,7 @@ from datetime import date
 
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
@@ -14,7 +15,7 @@ from .models import Album, Image
 class CreateAlbumView(LoginRequiredMixin, FormView):
     template_name = "user/create-album.html"
     form_class = CreateAlbumForm
-    success_url = '/accounts/profile'
+    success_url = '/accounts/profile/'
 
     def form_valid(self, form):
         album = Album(owner=self.request.user,
@@ -62,6 +63,9 @@ class ImageListForAlbumView(ListView):
 
     def get_queryset(self):
         album = get_object_or_404(Album, id=self.kwargs.get('pk'))
+        # login is not required, but users cannot request another user's private album
+        if not album.is_public and album.owner != self.request.user:
+            raise PermissionDenied()
         image_list = Image.objects.filter(album=album)
         return image_list
 
@@ -75,7 +79,7 @@ class ImageListForAlbumView(ListView):
 class UploadImageView(LoginRequiredMixin, FormView):
     template_name = "user/upload-image.html"
     form_class = UploadImageForm
-    success_url = '/accounts/profile'
+    success_url = '/accounts/profile/'
 
     def get_form_kwargs(self):
         # We need the authenticated user to get the list of albums owned by the user

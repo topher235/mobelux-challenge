@@ -22,6 +22,18 @@ class MinioUploader(FileUploader):
                             secure=False)  # b/c we're in a local dev environment
         self.bucket_name = 'uploads'
 
+    def _write_tmp_file(self, source: InMemoryUploadedFile):
+        """
+        Writes InMemoryUploadedFile to a temporary file location.
+
+        :param source: Django UploadedFile subclass for an uploaded file
+        :return: String path to the temporary file
+        """
+        path = f'/tmp/{datetime.now().timestamp()}'
+        with open(path, 'wb+') as out:
+            out.write(source.read())
+        return path
+
     def upload(self, source: Union[InMemoryUploadedFile, TemporaryUploadedFile], object_name: str):
         """
         Uploads the given file to Minio using the Minio client api. Django stores uploaded
@@ -40,9 +52,7 @@ class MinioUploader(FileUploader):
 
         # Get the path of the file
         if isinstance(source, InMemoryUploadedFile):
-            path = f'/tmp/{datetime.now().timestamp()}'
-            with open(path, 'wb+') as out:
-                out.write(source.read())
+            path = self._write_tmp_file(source)
         elif isinstance(source, TemporaryUploadedFile):
             path = source.temporary_file_path()
         else:
