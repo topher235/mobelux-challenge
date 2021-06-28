@@ -24,7 +24,7 @@ tr:nth-child(even) {
     <tbody>
         {% for image in image_list %}
             <tr>
-                <td><img src="{{ image_server_url }}/{{ image.location }}" height="200" width="300"/></td>
+                <td><img src="{{ image.location }}" height="200" width="300"/></td>
                 <td>{{ image.title }}</td>
                 <td>{{ image.date_uploaded }}</td>
                 <td>{{ image.album.owner.username }}</td>

@@ -4,6 +4,7 @@ from unittest.mock import patch
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 from django.test import TestCase
 
+from flickr_clone import settings
 from flickrapp.utils.file_utils import MinioUploader, upload_file
 
 
@@ -18,7 +19,7 @@ class FileUtilTest(TestCase):
                                          field_name=None,
                                          file=None,
                                          size=None)
-        expected_location = f'TestTitle-{timestamp}.txt'
+        expected_location = f'http://localhost:{settings.MINIO_PORT}/uploads/TestTitle-{timestamp}.txt'
         with patch('flickrapp.utils.file_utils.MinioUploader'), \
                 patch('flickrapp.utils.file_utils.MinioUploader.upload'), \
                 patch('flickrapp.utils.file_utils.datetime') as mock_datetime:

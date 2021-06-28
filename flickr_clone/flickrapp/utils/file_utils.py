@@ -74,7 +74,10 @@ def upload_file(file: Union[InMemoryUploadedFile, TemporaryUploadedFile], title:
     :param title: String title of the file
     :return: String final location of the file
     """
-    upload_location = f'{title}-{datetime.now().timestamp()}.{file.name.split(".")[-1]}'
+    object_name = f'{title}-{datetime.now().timestamp()}.{file.name.split(".")[-1]}'
     uploader = MinioUploader()
-    uploader.upload(source=file, object_name=upload_location)
+    uploader.upload(source=file, object_name=object_name)
+    # Should probably refactor upload_location into a separate method that could
+    # determine bucket location based on timezone or something like it
+    upload_location = f'http://localhost:{settings.MINIO_PORT}/uploads/{object_name}'
     return upload_location
