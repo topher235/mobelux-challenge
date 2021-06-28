@@ -198,11 +198,6 @@ class ImageListForAlbumViewTest(TestCase):
         self.assertTrue('album' in response.context)
         self.assertEqual(response.context['album'], album)
 
-    def test_image_server_provided_to_context(self):
-        response = self.client.get(reverse('image_list', kwargs={'pk': 1}))
-        self.assertTrue('image_server_url' in response.context)
-        self.assertEqual(response.context['image_server_url'], 'http://localhost:9000/uploads/')
-
 
 class UploadImageViewTest(TestCase):
     @classmethod

@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
 
-from flickr_clone import settings
 from .forms import CreateAlbumForm, UploadImageForm
 from .models import Album, Image
 
@@ -18,11 +17,10 @@ class CreateAlbumView(LoginRequiredMixin, FormView):
     success_url = '/accounts/profile/'
 
     def form_valid(self, form):
-        album = Album(owner=self.request.user,
-                      name=form.cleaned_data['name'],
-                      is_public=form.cleaned_data['is_public'],
-                      date_created=date.today())
-        album.save()
+        Album.objects.create(owner=self.request.user,
+                             name=form.cleaned_data['name'],
+                             is_public=form.cleaned_data['is_public'],
+                             date_created=date.today())
         return super().form_valid(form)
 
 
@@ -72,7 +70,6 @@ class ImageListForAlbumView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['album'] = Album.objects.get(id=self.kwargs.get('pk'))
-        context['image_server_url'] = f'http://localhost:{settings.MINIO_PORT}/uploads/'
         return context
 
 
@@ -91,9 +88,8 @@ class UploadImageView(LoginRequiredMixin, FormView):
         # Upload file
         upload_location = form.upload_image(self.request.FILES['file'], form.cleaned_data['title'])
         # Save image data to database
-        image = Image(album=form.cleaned_data['album'],
-                      title=form.cleaned_data['title'],
-                      location=upload_location,
-                      date_uploaded=date.today())
-        image.save()
+        Image.objects.create(album=form.cleaned_data['album'],
+                             title=form.cleaned_data['title'],
+                             location=upload_location,
+                             date_uploaded=date.today())
         return super().form_valid(form)
